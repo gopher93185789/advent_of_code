@@ -53,7 +53,7 @@ fn increasing(subarr: &Vec<i32>) -> bool{
             safe = true;
         }
     }
-
+    println!("{:?} {}", subarr, safe);
     return safe;
 }
 

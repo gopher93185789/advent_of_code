@@ -36,17 +36,70 @@ fn parse_data(filename: String) -> Vec<Vec<i32>> {
     return stuff;
 }
 
-fn num_of_safe(data: &Vec<Vec<i32>>) -> i32 {
-    let safe: i32 = 0;
-    for subarr in data {
-        for in
+fn increasing(subarr: &Vec<i32>) -> bool{
+    let size = subarr.len();
+    let mut safe = false;
+
+    for i in size..0 {
+        if i == 0 {
+            continue;
+        }
+
+        if subarr[i-1] == subarr[i]{
+            break
+        }
+
+        if subarr[i-1]-1 == subarr[i] || subarr[i-1]-2 == subarr[i] || subarr[i-1]-3 == subarr[i] {
+            safe = true;
+        }
     }
+
     return safe;
+}
+
+fn decreasing(subarr: &Vec<i32>) -> bool{
+    let size = subarr.len();
+    let mut safe = false;
+
+    for i in 0..size {
+        if i == size-1 {
+            continue;
+        }
+
+        if subarr[i] == subarr[i+1]{
+            break
+        }
+
+        if subarr[i] == subarr[i+1]+1 || subarr[i] == subarr[i+1]+2 || subarr[i] == subarr[i+1]+3{
+            safe = true;
+        }
+    }
+
+    println!("{:?} {}", subarr, safe);
+
+    return safe;
+}
+
+fn num_of_safe(data: &Vec<Vec<i32>>) -> i32 {
+    let mut total: i32 = 0;
+    for subarr in data {
+        let mut safe: bool = false;
+        if subarr[0] <= subarr[1] {
+            safe = increasing(subarr)
+        }else if subarr[0] >= subarr[1] {
+            safe = decreasing(subarr)
+        }
+
+        if safe {
+            total += 1;
+        }
+    }
+    return total;
 }
 
 fn main() {
     // matrix
     let data = parse_data(String::from("../testdata.txt"));
-    num_of_safe(&data);
-    println!("{:?}", data);
+    let safe = num_of_safe(&data);
+    println!("{}", safe);
 }

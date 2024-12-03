@@ -59,6 +59,7 @@ fn decreasing(subarr: &Vec<i32>) -> bool{
     let size = subarr.len();
     let mut safe = false;
 
+
     for i in 0..size-1{
        if i == size-1 {
             continue

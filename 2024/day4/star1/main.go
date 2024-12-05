@@ -24,7 +24,7 @@ func parseData(filename string) [][]rune {
 		log.Fatalln(err)
 	}
 	defer file.Close()
-
+ 
 	m1 := [][]rune{}
 
 	scanner := bufio.NewScanner(file)

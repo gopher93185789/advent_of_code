@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"time"
 )
 
 func getBoard(filename string) [][]rune {
@@ -29,67 +28,21 @@ func getBoard(filename string) [][]rune {
 	return board
 }
 
-func moveUp(board [][]rune, x, y int) bool {
+func moveUp(board [][]rune, x, y int) (newx int, newy int, end bool, dirchange rune) {
 	if y == 0 {
-		return true
+		return 0, 0, true, '^'
 	}
 	
-	board[y][x] = 'X'
+	
 	if board[y-1][x] != '#' {
+		board[y][x] = 'X'
 		board[y-1][x] = '^'
 	}else {
-		board[y-1][x] = '>'
+		board[y][x] = '>'
+		return x, y, false, '>'
 	}
 
-
-	return false
-}
-
-func moveDown(board [][]rune, x,y int) bool {
-	if y == len(board) - 1{
-		return true
-	}
-	
-	board[y][x] = 'X'
-	if board[y+1][x] != '#' {
-		board[y+1][x] = 'v'
-	}else {
-		board[y+1][x] = '<'
-	}
-
-	return false
-}
-
-func moveLeft(board [][]rune,x,y int) bool {
-	if x == 0{
-		return true
-	}
-	
-	board[y][x] = 'X'
-	if board[y][x-1] != '#' {
-		board[y][x-1] = '<'
-	}else {
-		board[y+1][x] = '^'
-	}
-
-	return false
-	
-}
-
-func moveRight(board [][]rune, x,y int) bool {
-	if x == len(board[y]) - 1{
-		return true
-	}
-	
-	board[y][x] = 'X'
-	if board[y][x+1] != '#' {
-		board[y][x+1] = '>'
-	}else {
-		board[y+1][x] = 'v'
-	}
-
-	return false
-	
+	return x, y-1, false, '^'
 }
 
 func printBoard(board [][]rune) {
@@ -105,44 +58,41 @@ func printBoard(board [][]rune) {
 
 func main() {
 	board := getBoard("../testdata.txt")
-	for {
-		all:
-		for y, row := range board {
-			for x, char := range row {
-				switch char {
-				case '^':
-					if moveUp(board, x, y) {
-						break all
-					}
 
-					break
-				case '>':
-					if moveRight(board, x, y) {
-						break all
-					}
 
-					break
-	
-				case '<':
-					if moveLeft(board, x, y) {
-						break all
-					}
-
-					break
-	
-				case 'v':
-					if moveDown(board, x, y) {
-						break all
-					}
-
-					break
-				}
-
-				printBoard(board)
-				fmt.Println("")
-				time.Sleep(1000 * time.Millisecond)
+	var (
+		x int
+		y int
+		p rune
+	)
+	for y1, row := range board {
+		for x1, char := range row {
+			if char == '^' || char == '>' || char == '<' || char == 'v' {
+				x = x1
+				y = y1
+				p = char
 			}
 		}
 	}
 
+	printBoard(board)
+	fmt.Println()
+
+	for {
+		switch p {
+		case '^':
+			nx, ny, end, dc := moveUp(board, x, y)
+			x = nx
+			y = ny
+			p = dc
+			if end {
+				break
+			}
+		default:
+			break
+		}
+
+	}
+
+	printBoard(board)
 }

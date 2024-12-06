@@ -91,7 +91,6 @@ func main() {
 		default:
 			break
 		}
-
 	}
 
 	printBoard(board)

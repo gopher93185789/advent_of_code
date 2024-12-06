@@ -75,8 +75,35 @@ func parseData(filename string) ([][]string, []mcnugget) {
 	return m2, m1
 }
 
+func filter(nums []string, combos []mcnugget) {
+    for {
+        swapped := false
+        nmap := map[string]int{}
+        for index, x := range nums {
+            nmap[x] = index
+        }
+
+        for i, v := range nums {
+            for _, combo := range combos {
+                if combo.a == v {
+                    if idx, ok := nmap[combo.b]; ok && idx < i {
+                        nums[i], nums[idx] = nums[idx], nums[i]
+                        swapped = true
+                        break
+                    }
+                }
+            }
+        }
+
+        if !swapped || check(nums, combos) {
+            break
+        }
+    }
+}
+
+
 func main() {
-	m2, m1 := parseData("../testdata.txt")
+	m2, m1 := parseData("../data.txt")
 	ss := [][]string{}
 	for _, row := range m2[1:] {
 		if ok := check(row, m1); !ok {
@@ -85,6 +112,11 @@ func main() {
 	}
 
 	var total int = 0
+
+	for _, rw := range ss {
+		filter(rw, m1)
+	}
+
 	for _, r := range ss {
 		n, err := strconv.Atoi(r[(len(r)/2)])
 		if err != nil {
@@ -94,5 +126,4 @@ func main() {
 	}
 
 	fmt.Println(total)
-	fmt.Println(ss)
 }
